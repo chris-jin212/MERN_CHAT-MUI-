@@ -1,0 +1,177 @@
+.rce-mbox-text {
+    display: none;
+}
+
+.rce-mbox-text:after {
+    content: none !important;
+}
+
+.rce-container-mbox .message {
+    position: relative;
+}
+
+.rce-mbox-right, .rce-mbox-left {
+    position: absolute;
+}
+
+.rce-container-mbox {
+    position: relative;
+}
+
+.rce-mbox {
+    box-shadow: none;
+    position: absolute;
+    bottom: 20px;
+}
+
+.rce-mbox-right {
+    right: 30px;
+}
+
+.rce-mbox-left {
+    left: 30px;
+}
+
+.rce-mbox-body {
+    margin: 0px;
+    padding: 0px;
+}
+.message-text p {
+    margin: 0 0 5px;
+}
+
+.message-text-right {
+    float: right;
+    max-width: 70%;
+    background: #007bff;
+    color: #fff;
+    padding: 30px;
+    border-radius: 1rem 1rem 0 1rem;
+    padding: .7rem;
+    font-weight: 500;
+    font-family: Archivo,sans-serif;
+    font-size: 15px;
+}
+
+.message-text-left {
+    float: left;
+    max-width: 70%;
+    background: #fff;
+    color: #000;
+    padding: 30px;
+    border-radius: 1rem 1rem 1rem 0;
+    padding: .7rem;
+    font-weight: 500;
+    font-family: Archivo,sans-serif;
+    font-size: 15px;
+}
+
+.user-list-sidebar {
+    border-right: 1px solid #dadce0;
+}
+
+#attachFile {
+    display: none;
+}
+
+.attach-file {
+    cursor: pointer;
+}
+
+.rdw-editor-wrapper {
+    width: 100%;
+}
+
+.toggle-toolbar {
+    display: none !important;
+}
+
+.rdw-editor-main {
+    border: 1px solid #ced4da;
+    border-radius: 40px;
+    width: calc( 100% - 15px);
+    margin-left: 10px;
+    padding: 0px 30px;
+    min-height: 58px;
+    overflow: hidden;
+    height: auto;
+}
+
+.rdw-editor-main:active,
+.rdw-editor-main:focus,
+.rdw-editor-main:hover,
+.rdw-editor-main:visited,
+.rdw-editor-main:focus-within {
+    border: 1px solid #80bdff;
+}
+
+.rdw-editor-main img {
+    max-width: 120px;
+    max-height: 55px;
+    height: auto;
+}
+
+.rce-navbar {
+    border-bottom: 1px solid #dadce0;
+    height: 53px;
+}
+
+.rce-avatar-container.large {
+    width: 52px;
+    height: 52px;
+}
+
+.chat-body > div > .message-list {
+    height: calc( 100vh - 165px );
+}
+
+.filter-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 45px;
+    padding: 10px;
+    background-color: white;
+    border-bottom:1px solid #dadce0;
+}
+
+.filter-item {
+    text-align: center;
+    cursor: pointer;
+}
+.filter-item p {
+    margin: 0px;
+}
+
+.filter-name {
+    color: #007bff;
+}
+
+.rce-citem-status {
+    width: 10px;
+    height: 10px;
+    border: 2px solid white;
+}
+
+.rdw-image-alignment-options-popup {
+    display: none;
+}
+.public-DraftEditor-content>div>div {
+    display: inline-block;
+}
+
+.public-DraftEditor-content>div>figure {
+    display: inline-block;
+    padding: 10px;
+    margin: 0px;
+}
+.public-DraftEditorPlaceholder-root {
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.message-text img {
+    height: 120px;
+    border-radius: 6px;
+    cursor: pointer;
+}

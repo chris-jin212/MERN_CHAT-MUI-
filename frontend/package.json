@@ -1,0 +1,64 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@mdi/js": "5.2.45",
+    "@mdi/react": "1.4.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "axios": "^0.20.0",
+    "bootstrap": "^4.5.2",
+    "draft-js": "0.11.5",
+    "draft-js-export-html": "^1.4.1",
+    "draftjs-to-html": "^0.9.1",
+    "eslint-plugin-react": "^7.20.6",
+    "html-to-draftjs": "^1.5.0",
+    "moment": "^2.27.0",
+    "prettier": "^2.1.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-app-env": "^1.2.3",
+    "react-bootstrap": "0.32.4",
+    "react-chat-elements": "10.9.2",
+    "react-dom": "^16.13.1",
+    "react-draft-wysiwyg": "^1.14.5",
+    "react-notifications": "1.4.3",
+    "react-render-html": "^0.6.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.3",
+    "socket.io-client": "^2.3.0"
+  },
+  "scripts": {
+    "start": "react-app-env start",
+    "build": "react-app-env build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "prettier": "@imaginary-cloud/prettier-config",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "6.6.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-standard": "^4.0.1"
+  }
+}
