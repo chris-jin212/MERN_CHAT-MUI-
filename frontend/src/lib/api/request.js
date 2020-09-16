@@ -3,7 +3,7 @@ const API_ROOT = process.env.REACT_APP_SERVER_URI
 
 axios.defaults.baseURL = API_ROOT
 
-export const fetchUsers = () => {
-  return axios.get('/api/users')
-    .then(res => res.data.data)
+export const fetchUsers = (id) => {
+  return axios.get(`/api/users?id=${id}`)
+    .then(res => res.data.users)
 }

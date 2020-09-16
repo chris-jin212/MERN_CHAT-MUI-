@@ -49,7 +49,7 @@ const UserList = (props) => {
 
   const onUserClicked = (e) => {
     const selUser = { ...e }
-    handleSetTargetUser(selUser.user)
+    handleSetTargetUser(signedInUser, selUser.user)
   }
 
   const onClickFilterItem = (category) => {
@@ -145,25 +145,17 @@ const UserList = (props) => {
         <ChatList
           className="chat-list"
           dataSource={users.map((f, i) => {
-            let subtitle = 'Hello'
-            if (
-              f.messages &&
-              f.messages.length
-            ) {
-              const lastMessage = f.messages[f.messages.length - 1]
-              subtitle = lastMessage.text
-            }
             return {
-              // avatar: require(`../static/images/avatar/${f.id}.jpg`),
               avatar: `${process.env.REACT_APP_SERVER_URI}/public/avatar/${f.Avatar}`,
               alt: f.id,
               title: f.Name,
               subtitle: f.lastMessage,
-              date: new Date(),
               unread: f.unread,
               user: f,
               statusColor: f.Active ? '#25c193' : '#6c757d',
-              statusColorType: 'badge'
+              statusColorType: 'badge',
+              // date: '',
+              dateString: f.lastTime ? f.lastTime : ' '
             }
           })}
           onClick={

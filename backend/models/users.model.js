@@ -26,6 +26,9 @@ module.exports = (sequelize, Sequelize) => {
       },
       Age: {
         type: Sequelize.NUMBER
+      },
+      BlockList: {
+        type: Sequelize.STRING
       }
     },
     {

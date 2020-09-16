@@ -4,16 +4,15 @@ import FormGroup from 'react-bootstrap/lib/FormGroup'
 import Col from 'react-bootstrap/lib/Col'
 import Jumbotron from 'react-bootstrap/lib/Jumbotron'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-// import DropdownButton from 'react-bootstrap/DropdownButton';
-// import Dropdown from 'react-bootstrap/Dropdown'
-import { MessageList, Navbar as NavbarComponent, Avatar } from 'react-chat-elements'
+import { MessageList, Navbar as NavbarComponent, Avatar, Dropdown, ChatItem } from 'react-chat-elements'
+import moment from 'moment'
 import { EditorState, convertToRaw, ContentState, getDefaultKeyBinding, KeyBindingUtil } from 'draft-js'
 import { Editor } from 'react-draft-wysiwyg'
 import draftToHtml from 'draftjs-to-html'
 import htmlToDraft from 'html-to-draftjs'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import Icon from '@mdi/react'
-import { mdiPaperclip } from '@mdi/js'
+import { mdiPaperclip, mdiDotsVertical, mdiInformationOutline, mdiBlockHelper } from '@mdi/js'
 
 import ChatContext from '../context/chat/ChatContext'
 
@@ -27,7 +26,8 @@ const ChatBox = (props) => {
     targetUser,
     chatData,
     isSelectedUser,
-    handleSendChatData
+    handleSendChatData,
+    handleBlockUser
   } = chatContext
 
   var setDomEditorRef = React.useRef()
@@ -86,7 +86,8 @@ const ChatBox = (props) => {
         text: draftToHtml(convertToRaw(editorState.getCurrentContent())),
         className: 'message'
       },
-      from: signedInUser.id
+      from: signedInUser.id,
+      // from_time: new Date()
     }
     handleSendChatData(message)
     setEditorState(EditorState.createEmpty())
@@ -94,8 +95,20 @@ const ChatBox = (props) => {
   }
 
   const handleSelect = (e) => {
-    console.log(e)
     setValue(e)
+  }
+
+  const onSelectDropdownItem = (e) => {
+    switch (e) {
+      case 0:
+        return
+      case 1:
+        handleBlockUser(signedInUser.id, targetUser.id)
+      case 2:
+        return
+      default:
+        return false
+    }
   }
 
   return (
@@ -127,18 +140,28 @@ const ChatBox = (props) => {
             }
             right={
               <div>
-                {/* <DropdownButton
-                  alignRight
-                  title="Dropdown right"
-                  id="dropdown-menu-align-right"
-                  onSelect={handleSelect}
-                >
-                  <Dropdown.Item eventKey="option-1">option-1</Dropdown.Item>
-                  <Dropdown.Item eventKey="option-2">option-2</Dropdown.Item>
-                  <Dropdown.Item eventKey="option-3">option 3</Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item eventKey="some link">some link</Dropdown.Item>
-                </DropdownButton> */}
+                <Dropdown
+                  buttonProps={{
+                    text: <Icon path={mdiDotsVertical}
+                      size={1}
+                      horizontal
+                      vertical
+                      color={'#949aa2'}
+                    />
+                  }}
+                  items={[
+                    {
+                      text: 'Your Profile'
+                    },
+                    {
+                      text: ' Block'
+                    },
+                    {
+                      text: 'Logout'
+                    }
+                  ]}
+                  onSelect={(e) => onSelectDropdownItem(e)}
+                />
               </div>
             }
           />
@@ -203,10 +226,13 @@ const ChatBox = (props) => {
           </FormGroup>
         </div>
       ) : (
-        <div>
+        <div className="landing-container">
           <Jumbotron>
-            <h1>Hello, {(signedInUser || {}).name}!</h1>
-            <p>Select a friend to start a chat.</p>
+            <img src={`${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`} alt={signedInUser.Avatar}></img>
+            <div className="landing-name">
+              <h1>Welcome, { signedInUser ? signedInUser.Name : '' }!</h1>
+              <p>Select a friend to start a chat.</p>
+            </div>
           </Jumbotron>
         </div>
       )}

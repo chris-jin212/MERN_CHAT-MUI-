@@ -36,7 +36,13 @@ const ChatPage = (props) => {
     handleSignIn,
     handleSetSignedInUser,
     handleLoadUsersList,
+    handleActiveUser,
     handleAddChatData,
+    handleBlockUserSuccess,
+    handleReceivedMessageSave,
+    handleChangeUsersList,
+    handleLoadChatData,
+    handleInActiveUser,
     handleSetErrorMessage,
     handleSetError
   } = chatContext
@@ -44,15 +50,28 @@ const ChatPage = (props) => {
   useEffect(() => {
     initAxios()
     fetchSession()
-    fetchUsers().then(
-      users => {
-        users.map((user) => {
-          user.unread = 0
-          user.lastMessage = ''
-        })
-        handleLoadUsersList(users)
-      }
-    )
+    fetchUsers(window.localStorage.getItem('userId'))
+      .then(
+        users => {
+          console.log("console users", users)
+          users.map((user) => {
+            var subTitle
+            if (user.content && user.content != null) {
+              subTitle = user.content
+              subTitle = subTitle.replace('<p>', '')
+              subTitle = subTitle.replace('</p>', '')
+              if (subTitle.indexOf('<img') >= 0) {
+                subTitle = 'PHOTO'
+              }
+            }
+            user.id = user.uniId
+            user.unread = Number(user.sum_unread)
+            user.lastMessage = subTitle
+            user.lastTime = user.time ? moment(user.time).format('hh:mm A') : ''
+          })
+          handleLoadUsersList(users)
+        }
+      )
     initialSocketConnection()
     // return () => {
     //   socket.off()
@@ -129,8 +148,12 @@ const ChatPage = (props) => {
   }
 
   const setupSocketListeners = () => {
-    socket.on('message', (e) => onMessageRecieved(e))
     socket.on('sign-in-confirm', (e) => onSignedInUserConfirm(e))
+    socket.on('user-active', (e) => onHandleActiveUser(e))
+    socket.on('load-chat-history', (e) => onLoadChatHistory(e))
+    socket.on('message', (e) => onMessageRecieved(e))
+    socket.on('block-user-success', (e) => onBlockUserSuccess(e))
+    socket.on('in-active', (e) => onHandleInActiveUser(e))
     socket.on('reconnect', () => onReconnection())
     socket.on('disconnect', () => onClientDisconnected())
   }
@@ -143,30 +166,39 @@ const ChatPage = (props) => {
     var userChatData = { ...chatData }
     var messageData = message.message
     var messageDataText = messageData.text
+    var displayMode = false
+
+    var userId = message.from
+    var lastTime = moment(new Date()).format('hh:mm A')
+    var lastMessage = message.message.text.replace('<p>', '')
+
+    lastMessage = lastMessage.replace('</p>', '')
+    if (lastMessage.indexOf('<img') >= 0) {
+      lastMessage = 'PHOTO'
+    }
 
     if (Number(message.from) === Number(signedInUser.id)) {
       messageData.position = 'right'
-      messageData.renderAddCmp = () => { return renderHtml(`<div className="message-text message-text-right">${messageDataText}</div>`) }
-      // messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/profile/${props.signedInUser.profile_image}`;
-      messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/avatar/01.jpg`
+      messageData.renderAddCmp = () => {
+        return renderHtml(`<div className="message-text message-text-right">${messageDataText}</div>`)
+      }
+      messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`
+      userId = message.to
+      displayMode = true
     } else if (Number(message.from) === Number(targetUser.id)) {
       messageData.position = 'left'
-      messageData.renderAddCmp = () => { return renderHtml(`<div className="message-text message-text-left">${messageDataText}</div>`) }
-      // messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/profile/${props.targetUser.profile_image}`;
-      messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/avatar/02.jpg`
+      messageData.renderAddCmp = () => {
+        return renderHtml(`<div className="message-text message-text-left">${messageDataText}</div>`)
+      }
+      messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/avatar/${targetUser.Avatar}`
+      handleReceivedMessageSave(message)
+      displayMode = true
     } else {
-      var tempUsersList = []
-      usersList.map((user) => {
-        if (Number(user.id) === Number(message.from)) {
-          user.unread += 1
-          user.lastMessage = message.message.text
-        }
-        tempUsersList = [...tempUsersList, user]
-      })
+      displayMode = false
     }
 
     /* Mark for message DateString */
-    messageData.dateString = moment(new Date()).format('hh:mm A')
+    messageData.dateString = moment(message.time).format('hh:mm A')
 
     if (!userChatData.messages) {
       userChatData.messages = []
@@ -181,7 +213,65 @@ const ChatPage = (props) => {
       }
     }
 
-    handleAddChatData(messageData)
+    if (displayMode === true) {
+      handleAddChatData(messageData)
+    }
+    handleChangeUsersList({ lastMessage, userId, lastTime, unread: !displayMode })
+  }
+
+  const onBlockUserSuccess = (e) => {
+    handleBlockUserSuccess(e)
+  }
+
+  const onLoadChatHistory = (chatHistory) => {
+    console.log("chat history", chatHistory)
+    var tempChatData = []
+
+    chatHistory.map((data, id) => {
+      var messageData = {}
+      messageData.type = 'text'
+      messageData.text = data.content
+      messageData.className = 'message'
+      // messageData.date = ''
+      if (Number(data.from) === Number(signedInUser.id)) {
+        messageData.position = 'right'
+        messageData.renderAddCmp = () => {
+          return renderHtml(`<div className="message-text message-text-right">${data.content}</div>`)
+        }
+        if (chatHistory[id + 1] && Number(chatHistory[id + 1].from) === Number(signedInUser.id)) {
+          messageData.date = ''
+          messageData.dateString = ''
+          messageData.avatar = ''
+        } else {
+          messageData.dateString = moment(data.time).format('hh:mm A')
+          messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`
+        }
+      } else {
+        messageData.position = 'left'
+        messageData.renderAddCmp = () => {
+          return renderHtml(`<div className="message-text message-text-left">${data.content}</div>`)
+        }
+        if (chatHistory[id + 1] && Number(chatHistory[id + 1].from) === Number(data.from)) {
+          messageData.date = ''
+          messageData.dateString = ''
+          messageData.avatar = ''
+        } else {
+          messageData.dateString = moment(data.time).format('hh:mm A')
+          messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/avatar/${targetUser.Avatar}`
+        }
+      }
+      tempChatData = [...tempChatData, messageData]
+    })
+
+    handleLoadChatData(tempChatData)
+  }
+
+  const onHandleActiveUser = (e) => {
+    handleActiveUser(e)
+  }
+
+  const onHandleInActiveUser = (e) => {
+    handleInActiveUser(e)
   }
 
   const toggleViews = () => {

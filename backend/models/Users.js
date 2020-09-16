@@ -28,7 +28,8 @@ const Users = sequelize.define('new_database_dagger', {
     Avatar: { type: DataTypes.STRING },
     Active: { type: DataTypes.INTEGER },
     Country: { type: DataTypes.STRING },
-    Age: { type: DataTypes.INTEGER }
+    Age: { type: DataTypes.INTEGER },
+    BlockList: { type: DataTypes.STRING}
 }, DISABLE_SEQUELIZE_DEFAULTS);
 
 module.exports = Users;

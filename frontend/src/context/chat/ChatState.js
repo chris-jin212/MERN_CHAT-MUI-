@@ -6,10 +6,15 @@ import socket from '../../lib/socket/index'
 
 import {
   LOAD_USERS_LIST,
+  LOAD_CHAT_DATA,
   SET_TARGET_USER,
   SET_SIGNEDIN_USER,
   SET_NEW_CHAT_DATA,
-  SET_FILTER_CATEGORY
+  SET_FILTER_CATEGORY,
+  SET_BLOCK_USER,
+  CHANGE_USERS_LIST,
+  SET_USER_IN_ACTIVE,
+  SET_USER_ACTIVE
 } from '../types'
 
 const ChatState = props => {
@@ -30,6 +35,7 @@ const ChatState = props => {
   const [state, dispatch] = useReducer(ChatReducer, initialState)
 
   const handleSignIn = async (data) => {
+    console.log("fetch session data23 please", data)
     try {
       socket.emit('sign-in', data)
     } catch {
@@ -62,10 +68,33 @@ const ChatState = props => {
     }
   }
 
-  const handleSetTargetUser = async (data) => {
+  const handleActiveUser = async (userId) => {
+    try {
+      dispatch({
+        type: SET_USER_ACTIVE,
+        userId
+      })
+    } catch {
+
+    }
+  }
+
+  const handleSetTargetUser = async (signedInUser, targetUser) => {
+    socket.emit('load-chat-history', { signedInUserId: signedInUser.id, targetUserId: targetUser.id })
     try {
       dispatch({
         type: SET_TARGET_USER,
+        data: targetUser
+      })
+    } catch {
+
+    }
+  }
+
+  const handleLoadChatData = async (data) => {
+    try {
+      dispatch({
+        type: LOAD_CHAT_DATA,
         data
       })
     } catch {
@@ -97,6 +126,60 @@ const ChatState = props => {
       dispatch({
         type: SET_FILTER_CATEGORY,
         data
+      })
+    } catch {
+
+    }
+  }
+
+  const handleBlockUser = async (signedInUserId, targetUserId) => {
+    socket.emit('block-user', { signedInUserId, targetUserId })
+    try {
+      dispatch({
+        type: SET_BLOCK_USER,
+        signedInUserId,
+        targetUserId
+      })
+    } catch {
+
+    }
+  }
+
+  const handleBlockUserSuccess = async (targetUserId) => {
+    try {
+      dispatch({
+        type: SET_BLOCK_USER,
+        targetUserId
+      })
+    } catch {
+    }
+  }
+
+  const handleReceivedMessageSave = async (data) => {
+    socket.emit('received-message-save', data)
+    try {
+
+    } catch {
+
+    }
+  }
+
+  const handleChangeUsersList = async (data) => {
+    try {
+      dispatch({
+        type: CHANGE_USERS_LIST,
+        data
+      })
+    } catch {
+
+    }
+  }
+
+  const handleInActiveUser = async (userId) => {
+    try {
+      dispatch({
+        type: SET_USER_IN_ACTIVE,
+        userId
       })
     } catch {
 
@@ -135,10 +218,17 @@ const ChatState = props => {
         handleSignIn,
         handleSetSignedInUser,
         handleLoadUsersList,
+        handleActiveUser,
         handleSetTargetUser,
+        handleLoadChatData,
         handleSendChatData,
         handleAddChatData,
         handleSetFilterCategory,
+        handleBlockUser,
+        handleBlockUserSuccess,
+        handleReceivedMessageSave,
+        handleChangeUsersList,
+        handleInActiveUser,
         handleSetErrorMessage,
         handleSetError
       }}
