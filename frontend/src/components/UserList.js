@@ -1,32 +1,21 @@
-import React, { useState, useContext, Fragment } from 'react'
+import React, { useContext, Fragment } from 'react'
 import { ChatList, Navbar as NavbarContainer, Avatar } from 'react-chat-elements'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import { mdiPaperclip, mdiDotsVertical, mdiMessageText, mdiAccountTie, mdiFaceWoman, mdiHumanGreeting } from '@mdi/js'
+import { mdiDotsVertical, mdiMessageText, mdiAccountTie, mdiFaceWoman, mdiHumanGreeting } from '@mdi/js'
 import Icon from '@mdi/react'
 
 import ChatContext from '../context/chat/ChatContext'
 
 const UserList = (props) => {
-  const [searchQuery, setSearchQuery] = useState()
-
   const chatContext = useContext(ChatContext)
   const {
     usersList,
     filterCategory,
     signedInUser,
+    showUserList,
     handleSetTargetUser,
-    handleSetFilterCategory
+    handleSetFilterCategory,
+    handleShowUserList
   } = chatContext
-
-  const searchInput = (e) => {
-    const value = e.target.value
-    let searchQuery = null
-    if (value) {
-      searchQuery = value
-    }
-    setSearchQuery(searchQuery)
-  }
 
   const getFilteredUserList = () => {
     switch (filterCategory) {
@@ -50,6 +39,7 @@ const UserList = (props) => {
   const onUserClicked = (e) => {
     const selUser = { ...e }
     handleSetTargetUser(signedInUser, selUser.user)
+    handleShowUserList(!showUserList)
   }
 
   const onClickFilterItem = (category) => {
@@ -59,14 +49,6 @@ const UserList = (props) => {
   var users = getFilteredUserList()
   return (
     <Fragment>
-      {/* <FormGroup>
-        <FormControl
-          type="text"
-          placeholder="Search for a user here..."
-          onInput={() => searchInput()}
-        />
-      </FormGroup> */}
-
       <NavbarContainer
         left={
           <div>
@@ -93,9 +75,6 @@ const UserList = (props) => {
           </div>
         }
       />
-
-      {/* <NavbarContainer
-        center={ */}
       <div className="filter-container">
         <div className='filter-item' onClick={() => onClickFilterItem('all')} >
           <Icon path={mdiMessageText}
@@ -138,8 +117,6 @@ const UserList = (props) => {
           <p className={filterCategory === 'online' ? 'filter-name' : ''}>Online</p>
         </div>
       </div>
-      {/* }
-      /> */}
 
       {users.length ? (
         <ChatList
@@ -154,7 +131,6 @@ const UserList = (props) => {
               user: f,
               statusColor: f.Active ? '#25c193' : '#6c757d',
               statusColorType: 'badge',
-              // date: '',
               dateString: f.lastTime ? f.lastTime : ' '
             }
           })}

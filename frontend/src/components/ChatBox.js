@@ -1,24 +1,21 @@
 import React, { useState, useContext, Fragment } from 'react'
-import PropTypes from 'prop-types'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import Col from 'react-bootstrap/lib/Col'
 import Jumbotron from 'react-bootstrap/lib/Jumbotron'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import { MessageList, Navbar as NavbarComponent, Avatar, Dropdown, ChatItem } from 'react-chat-elements'
-import moment from 'moment'
+import { MessageList, Navbar as NavbarComponent, Avatar, Dropdown } from 'react-chat-elements'
+import { mdiPaperclip, mdiDotsVertical, mdiArrowLeftBold } from '@mdi/js'
+import IconButton from '@material-ui/core/IconButton'
+import Icon from '@mdi/react'
 import { EditorState, convertToRaw, ContentState, getDefaultKeyBinding, KeyBindingUtil } from 'draft-js'
 import { Editor } from 'react-draft-wysiwyg'
 import draftToHtml from 'draftjs-to-html'
 import htmlToDraft from 'html-to-draftjs'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import Icon from '@mdi/react'
-import { mdiPaperclip, mdiDotsVertical, mdiInformationOutline, mdiBlockHelper } from '@mdi/js'
 
 import ChatContext from '../context/chat/ChatContext'
 
 const ChatBox = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
-  const [value, setValue] = useState('')
 
   const chatContext = useContext(ChatContext)
   const {
@@ -26,8 +23,10 @@ const ChatBox = (props) => {
     targetUser,
     chatData,
     isSelectedUser,
+    showUserList,
     handleSendChatData,
-    handleBlockUser
+    handleBlockUser,
+    handleShowUserList
   } = chatContext
 
   var setDomEditorRef = React.useRef()
@@ -79,23 +78,23 @@ const ChatBox = (props) => {
   }
 
   const onSendClicked = () => {
+    var messageText = draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    if (messageText === '<p></p>\n') {
+      return false
+    }
+
     var message = {
       to: targetUser.id,
       message: {
         type: 'text',
-        text: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+        text: messageText,
         className: 'message'
       },
-      from: signedInUser.id,
-      // from_time: new Date()
+      from: signedInUser.id
     }
     handleSendChatData(message)
     setEditorState(EditorState.createEmpty())
     setDomEditorRef.current.focusEditor()
-  }
-
-  const handleSelect = (e) => {
-    setValue(e)
   }
 
   const onSelectDropdownItem = (e) => {
@@ -104,6 +103,7 @@ const ChatBox = (props) => {
         return
       case 1:
         handleBlockUser(signedInUser.id, targetUser.id)
+        break
       case 2:
         return
       default:
@@ -118,14 +118,23 @@ const ChatBox = (props) => {
           <NavbarComponent
             left={
               <div>
-                {/* <Col mdHidden lgHidden>
-                  <p className="navBarText">
-                    <Glyphicon
-                      onClick={() => props.onBackPressed}
-                      glyph="chevron-left"
+                <Col mdHidden lgHidden>
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={() => handleShowUserList(!showUserList)}
+                    edge="start"
+                    className="toggle-btn"
+                  >
+                    <Icon path={mdiArrowLeftBold }
+                      title="User Profile"
+                      size={1.3}
+                      color="rgb(162 162 162)"
+                      onClick={() => handleShowUserList(!showUserList)}
                     />
-                  </p>
-                </Col> */}
+                  </IconButton>
+
+                </Col>
                 <Avatar
                   src={`${process.env.REACT_APP_SERVER_URI}/public/avatar/${targetUser.Avatar}`}
                   alt={'logo'}
@@ -181,9 +190,7 @@ const ChatBox = (props) => {
               toolbarClassName={'toggle-toolbar'}
               editorClassName="demo-editor"
               keyBindingFn={(e) => keyBindingFunction(e)}
-              // onEditorStateChange={(e) => onEditorStateChange(e)}
               onEditorStateChange={(e) => onEditorStateChange(e)}
-              // onFocus={this.onFocusEditor.bind(this)}
               toolbar={{
                 options: [],
                 inline: {
@@ -238,10 +245,6 @@ const ChatBox = (props) => {
       )}
     </Fragment>
   )
-}
-
-ChatBox.propTypes = {
-  onBackPressed: PropTypes.func
 }
 
 export default ChatBox

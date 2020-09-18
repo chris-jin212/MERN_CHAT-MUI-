@@ -14,7 +14,8 @@ import {
   SET_BLOCK_USER,
   CHANGE_USERS_LIST,
   SET_USER_IN_ACTIVE,
-  SET_USER_ACTIVE
+  SET_USER_ACTIVE,
+  SET_SHOW_USER_LIST
 } from '../types'
 
 const ChatState = props => {
@@ -25,9 +26,10 @@ const ChatState = props => {
     chatData: {},
     filterCategory: 'all',
     isSelectedUser: false,
+    showSettingsModal: false,
+    showUserList: true,
     error: false,
-    errorMessage: '',
-    showSettingsModal: false
+    errorMessage: ''
   }
 
   // eslint-disable-next-line react/prop-types
@@ -35,7 +37,6 @@ const ChatState = props => {
   const [state, dispatch] = useReducer(ChatReducer, initialState)
 
   const handleSignIn = async (data) => {
-    console.log("fetch session data23 please", data)
     try {
       socket.emit('sign-in', data)
     } catch {
@@ -61,10 +62,6 @@ const ChatState = props => {
         data
       })
     } catch (err) {
-      // dispatch({
-      // 	type:
-      // 	data:
-      // })
     }
   }
 
@@ -157,11 +154,6 @@ const ChatState = props => {
 
   const handleReceivedMessageSave = async (data) => {
     socket.emit('received-message-save', data)
-    try {
-
-    } catch {
-
-    }
   }
 
   const handleChangeUsersList = async (data) => {
@@ -180,6 +172,17 @@ const ChatState = props => {
       dispatch({
         type: SET_USER_IN_ACTIVE,
         userId
+      })
+    } catch {
+
+    }
+  }
+
+  const handleShowUserList = async (e) => {
+    try {
+      dispatch({
+        type: SET_SHOW_USER_LIST,
+        data: e
       })
     } catch {
 
@@ -215,6 +218,7 @@ const ChatState = props => {
         error: state.error,
         errorMessage: state.errorMessage,
         showSettingsModal: state.showSettingsModal,
+        showUserList: state.showUserList,
         handleSignIn,
         handleSetSignedInUser,
         handleLoadUsersList,
@@ -229,6 +233,7 @@ const ChatState = props => {
         handleReceivedMessageSave,
         handleChangeUsersList,
         handleInActiveUser,
+        handleShowUserList,
         handleSetErrorMessage,
         handleSetError
       }}

@@ -8,7 +8,8 @@ import {
   SET_BLOCK_USER,
   CHANGE_USERS_LIST,
   SET_USER_ACTIVE,
-  SET_USER_IN_ACTIVE
+  SET_USER_IN_ACTIVE,
+  SET_SHOW_USER_LIST
 } from '../types'
 
 export default (state, action) => {
@@ -104,6 +105,11 @@ export default (state, action) => {
             }
             : user
         )
+      }
+    case SET_SHOW_USER_LIST:
+      return {
+        ...state,
+        showUserList: action.data
       }
     default:
       return state
