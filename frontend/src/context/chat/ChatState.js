@@ -1,8 +1,8 @@
 /* eslint-disable no-tabs */
-import React, { useReducer } from 'react'
-import ChatContext from './ChatContext'
-import ChatReducer from './ChatReducer'
-import socket from '../../lib/socket/index'
+import React, { useReducer } from 'react';
+import ChatContext from './ChatContext';
+import ChatReducer from './ChatReducer';
+import socket from 'lib/socket/index';
 
 import {
   LOAD_USERS_LIST,
@@ -16,7 +16,7 @@ import {
   SET_USER_IN_ACTIVE,
   SET_USER_ACTIVE,
   SET_SHOW_USER_LIST
-} from '../types'
+} from '../types';
 
 const ChatState = props => {
   const initialState = {
@@ -30,180 +30,151 @@ const ChatState = props => {
     showUserList: true,
     error: false,
     errorMessage: ''
-  }
+  };
 
   // eslint-disable-next-line react/prop-types
-  const { children } = props
-  const [state, dispatch] = useReducer(ChatReducer, initialState)
+  const { children } = props;
+  const [state, dispatch] = useReducer(ChatReducer, initialState);
 
-  const handleSignIn = async (data) => {
+  const handleSignIn = async data => {
     try {
-      socket.emit('sign-in', data)
-    } catch {
+      socket.emit('sign-in', data);
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleSetSignedInUser = async (data) => {
+  const handleSetSignedInUser = async data => {
     try {
       dispatch({
         type: SET_SIGNEDIN_USER,
         data
-      })
-    } catch (err) {
+      });
+    } catch (err) {}
+  };
 
-    }
-  }
-
-  const handleLoadUsersList = async (data) => {
+  const handleLoadUsersList = async data => {
     try {
       dispatch({
         type: LOAD_USERS_LIST,
         data
-      })
-    } catch (err) {
-    }
-  }
+      });
+    } catch (err) {}
+  };
 
-  const handleActiveUser = async (userId) => {
+  const handleActiveUser = async userId => {
     try {
       dispatch({
         type: SET_USER_ACTIVE,
         userId
-      })
-    } catch {
-
-    }
-  }
+      });
+    } catch {}
+  };
 
   const handleSetTargetUser = async (signedInUser, targetUser) => {
-    socket.emit('load-chat-history', { signedInUserId: signedInUser.id, targetUserId: targetUser.id })
+    socket.emit('load-chat-history', {
+      signedInUserId: signedInUser.id,
+      targetUserId: targetUser.id
+    });
     try {
       dispatch({
         type: SET_TARGET_USER,
         data: targetUser
-      })
-    } catch {
+      });
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleLoadChatData = async (data) => {
+  const handleLoadChatData = async data => {
     try {
       dispatch({
         type: LOAD_CHAT_DATA,
         data
-      })
-    } catch {
+      });
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleSendChatData = async (data) => {
+  const handleSendChatData = async data => {
     try {
-      socket.emit('message', data)
-    } catch {
+      socket.emit('message', data);
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleAddChatData = async (data) => {
+  const handleAddChatData = async data => {
     try {
       dispatch({
         type: SET_NEW_CHAT_DATA,
         data
-      })
-    } catch {
+      });
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleSetFilterCategory = async (data) => {
+  const handleSetFilterCategory = async data => {
     try {
       dispatch({
         type: SET_FILTER_CATEGORY,
         data
-      })
-    } catch {
-
-    }
-  }
+      });
+    } catch {}
+  };
 
   const handleBlockUser = async (signedInUserId, targetUserId) => {
-    socket.emit('block-user', { signedInUserId, targetUserId })
+    socket.emit('block-user', { signedInUserId, targetUserId });
     try {
       dispatch({
         type: SET_BLOCK_USER,
         signedInUserId,
         targetUserId
-      })
-    } catch {
+      });
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleBlockUserSuccess = async (targetUserId) => {
+  const handleBlockUserSuccess = async targetUserId => {
     try {
       dispatch({
         type: SET_BLOCK_USER,
         targetUserId
-      })
-    } catch {
-    }
-  }
+      });
+    } catch {}
+  };
 
-  const handleReceivedMessageSave = async (data) => {
-    socket.emit('received-message-save', data)
-  }
+  const handleReceivedMessageSave = async data => {
+    socket.emit('received-message-save', data);
+  };
 
-  const handleChangeUsersList = async (data) => {
+  const handleChangeUsersList = async data => {
     try {
       dispatch({
         type: CHANGE_USERS_LIST,
         data
-      })
-    } catch {
+      });
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleInActiveUser = async (userId) => {
+  const handleInActiveUser = async userId => {
     try {
       dispatch({
         type: SET_USER_IN_ACTIVE,
         userId
-      })
-    } catch {
+      });
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleShowUserList = async (e) => {
+  const handleShowUserList = async e => {
     try {
       dispatch({
         type: SET_SHOW_USER_LIST,
         data: e
-      })
-    } catch {
+      });
+    } catch {}
+  };
 
-    }
-  }
-
-  const handleSetErrorMessage = async (data) => {
+  const handleSetErrorMessage = async data => {
     try {
+    } catch {}
+  };
 
-    } catch {
-
-    }
-  }
-
-  const handleSetError = async (data) => {
+  const handleSetError = async data => {
     try {
-
-    } catch {
-
-    }
-  }
+    } catch {}
+  };
 
   return (
     <ChatContext.Provider
@@ -240,7 +211,7 @@ const ChatState = props => {
     >
       {children}
     </ChatContext.Provider>
-  )
-}
+  );
+};
 
-export default ChatState
+export default ChatState;

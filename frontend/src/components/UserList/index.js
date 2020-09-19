@@ -1,12 +1,22 @@
-import React, { useContext, Fragment } from 'react'
-import { ChatList, Navbar as NavbarContainer, Avatar } from 'react-chat-elements'
-import { mdiDotsVertical, mdiMessageText, mdiAccountTie, mdiFaceWoman, mdiHumanGreeting } from '@mdi/js'
-import Icon from '@mdi/react'
+import React, { useContext, Fragment } from 'react';
+import {
+  ChatList,
+  Navbar as NavbarContainer,
+  Avatar
+} from 'react-chat-elements';
+import {
+  mdiDotsVertical,
+  mdiMessageText,
+  mdiAccountTie,
+  mdiFaceWoman,
+  mdiHumanGreeting
+} from '@mdi/js';
+import Icon from '@mdi/react';
 
-import ChatContext from '../context/chat/ChatContext'
+import ChatContext from 'context/chat/ChatContext';
 
-const UserList = (props) => {
-  const chatContext = useContext(ChatContext)
+const UserList = props => {
+  const chatContext = useContext(ChatContext);
   const {
     usersList,
     filterCategory,
@@ -15,38 +25,34 @@ const UserList = (props) => {
     handleSetTargetUser,
     handleSetFilterCategory,
     handleShowUserList
-  } = chatContext
+  } = chatContext;
 
   const getFilteredUserList = () => {
     switch (filterCategory) {
       case 'all':
-        return usersList
+        return usersList;
       case 'male':
-        return usersList.filter(user =>
-          user.Gender === 'Male'
-        )
+        return usersList.filter(user => user.Gender === 'Male');
       case 'female':
-        return usersList.filter(user =>
-          user.Gender === 'Female'
-        )
+        return usersList.filter(user => user.Gender === 'Female');
       case 'online':
-        return usersList.filter(user =>
-          user.Active === 1
-        )
+        return usersList.filter(user => user.Active === 1);
+      default:
+        return usersList;
     }
-  }
+  };
 
-  const onUserClicked = (e) => {
-    const selUser = { ...e }
-    handleSetTargetUser(signedInUser, selUser.user)
-    handleShowUserList(!showUserList)
-  }
+  const onUserClicked = e => {
+    const selUser = { ...e };
+    handleSetTargetUser(signedInUser, selUser.user);
+    handleShowUserList(!showUserList);
+  };
 
-  const onClickFilterItem = (category) => {
-    handleSetFilterCategory(category)
-  }
+  const onClickFilterItem = category => {
+    handleSetFilterCategory(category);
+  };
 
-  var users = getFilteredUserList()
+  var users = getFilteredUserList();
   return (
     <Fragment>
       <NavbarContainer
@@ -65,7 +71,8 @@ const UserList = (props) => {
         }
         right={
           <div>
-            <Icon path={mdiDotsVertical}
+            <Icon
+              path={mdiDotsVertical}
               size={1}
               horizontal
               vertical
@@ -76,8 +83,9 @@ const UserList = (props) => {
         }
       />
       <div className="filter-container">
-        <div className='filter-item' onClick={() => onClickFilterItem('all')} >
-          <Icon path={mdiMessageText}
+        <div className="filter-item" onClick={() => onClickFilterItem('all')}>
+          <Icon
+            path={mdiMessageText}
             size={1}
             horizontal
             vertical
@@ -86,8 +94,9 @@ const UserList = (props) => {
           />
           <p className={filterCategory === 'all' ? 'filter-name' : ''}>All</p>
         </div>
-        <div className='filter-item' onClick={() => onClickFilterItem('male')} >
-          <Icon path={mdiAccountTie}
+        <div className="filter-item" onClick={() => onClickFilterItem('male')}>
+          <Icon
+            path={mdiAccountTie}
             size={1}
             horizontal
             vertical
@@ -96,25 +105,37 @@ const UserList = (props) => {
           />
           <p className={filterCategory === 'male' ? 'filter-name' : ''}>Male</p>
         </div>
-        <div className='filter-item' onClick={() => onClickFilterItem('female')} >
-          <Icon path={mdiFaceWoman}
+        <div
+          className="filter-item"
+          onClick={() => onClickFilterItem('female')}
+        >
+          <Icon
+            path={mdiFaceWoman}
             size={1}
             horizontal
             vertical
             rotate={180}
             color={filterCategory === 'female' ? '#007bff' : '#949aa2'}
           />
-          <p className={filterCategory === 'female' ? 'filter-name' : ''}>Female</p>
+          <p className={filterCategory === 'female' ? 'filter-name' : ''}>
+            Female
+          </p>
         </div>
-        <div className='filter-item' onClick={() => onClickFilterItem('online')}>
-          <Icon path={mdiHumanGreeting}
+        <div
+          className="filter-item"
+          onClick={() => onClickFilterItem('online')}
+        >
+          <Icon
+            path={mdiHumanGreeting}
             size={1}
             horizontal
             vertical
             rotate={180}
             color={filterCategory === 'online' ? '#007bff' : '#949aa2'}
           />
-          <p className={filterCategory === 'online' ? 'filter-name' : ''}>Online</p>
+          <p className={filterCategory === 'online' ? 'filter-name' : ''}>
+            Online
+          </p>
         </div>
       </div>
 
@@ -132,17 +153,15 @@ const UserList = (props) => {
               statusColor: f.Active ? '#25c193' : '#6c757d',
               statusColorType: 'badge',
               dateString: f.lastTime ? f.lastTime : ' '
-            }
+            };
           })}
-          onClick={
-            (e) => onUserClicked(e)
-          }
+          onClick={e => onUserClicked(e)}
         />
       ) : (
         <div className="text-center no-users">No users to show.</div>
       )}
     </Fragment>
-  )
-}
+  );
+};
 
-export default UserList
+export default UserList;

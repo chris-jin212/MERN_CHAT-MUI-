@@ -10,7 +10,7 @@ import {
   SET_USER_ACTIVE,
   SET_USER_IN_ACTIVE,
   SET_SHOW_USER_LIST
-} from '../types'
+} from '../types';
 
 export default (state, action) => {
   switch (action.type) {
@@ -18,27 +18,27 @@ export default (state, action) => {
       return {
         ...state,
         usersList: action.data
-      }
+      };
     case SET_SIGNEDIN_USER:
       return {
         ...state,
         signedInUser: { ...action.data }
-      }
+      };
 
     case SET_USER_ACTIVE:
       return {
         ...state,
         usersList: state.usersList
           ? state.usersList.map(user =>
-            Number(user.id) === Number(action.userId)
-              ? {
-                ...user,
-                Active: 1
-              }
-              : user
-          )
+              Number(user.id) === Number(action.userId)
+                ? {
+                    ...user,
+                    Active: 1
+                  }
+                : user
+            )
           : ''
-      }
+      };
     case SET_TARGET_USER:
       return {
         ...state,
@@ -52,47 +52,47 @@ export default (state, action) => {
         chatData: {
           messages: []
         }
-      }
+      };
     case SET_NEW_CHAT_DATA:
       return {
         ...state,
         chatData: {
-          messages: [
-            ...state.chatData.messages, action.data
-          ]
+          messages: [...state.chatData.messages, action.data]
         }
-      }
+      };
     case SET_FILTER_CATEGORY:
       return {
         ...state,
         filterCategory: action.data
-      }
+      };
     case SET_BLOCK_USER:
       return {
         ...state,
-        usersList: state.usersList.filter(({ id }) => id !== action.targetUserId)
-      }
+        usersList: state.usersList.filter(
+          ({ id }) => id !== action.targetUserId
+        )
+      };
     case CHANGE_USERS_LIST:
       return {
         ...state,
         usersList: state.usersList.map(user =>
           Number(user.id) === Number(action.data.userId)
             ? {
-              ...user,
-              unread: action.data.unread ? user.unread + 1 : user.unread,
-              lastMessage: action.data.lastMessage,
-              lastTime: action.data.lastTime
-            }
+                ...user,
+                unread: action.data.unread ? user.unread + 1 : user.unread,
+                lastMessage: action.data.lastMessage,
+                lastTime: action.data.lastTime
+              }
             : user
         )
-      }
+      };
     case LOAD_CHAT_DATA:
       return {
         ...state,
         chatData: {
           messages: [...action.data]
         }
-      }
+      };
 
     case SET_USER_IN_ACTIVE:
       return {
@@ -100,18 +100,18 @@ export default (state, action) => {
         usersList: state.usersList.map(user =>
           Number(user.id) === Number(action.userId)
             ? {
-              ...user,
-              Active: 0
-            }
+                ...user,
+                Active: 0
+              }
             : user
         )
-      }
+      };
     case SET_SHOW_USER_LIST:
       return {
         ...state,
         showUserList: action.data
-      }
+      };
     default:
-      return state
+      return state;
   }
-}
+};

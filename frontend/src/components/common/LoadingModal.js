@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import Modal from 'react-bootstrap/lib/Modal'
+import React from 'react';
+import PropTypes from 'prop-types';
+import Glyphicon from 'react-bootstrap/lib/Glyphicon';
+import Modal from 'react-bootstrap/lib/Modal';
 
-const LoadingModal = (props) => {
+const LoadingModal = props => {
   return (
     <div>
       <Modal show={props.show}>
@@ -15,15 +15,15 @@ const LoadingModal = (props) => {
         </Modal.Body>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
 LoadingModal.propTypes = {
   show: PropTypes.bool
-}
+};
 
 LoadingModal.defaultProps = {
   show: false
-}
+};
 
-export default LoadingModal
+export default LoadingModal;

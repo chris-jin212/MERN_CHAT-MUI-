@@ -1,34 +1,34 @@
-const jwt = require("jsonwebtoken");
-const db = require("../../models");
-const Users = db.users;
-const Op = db.Sequelize.Op;
-const sequelize = db.sequelize;
+const jwt = require('jsonwebtoken')
+const db = require('../../models')
+const Users = db.users
+const Op = db.Sequelize.Op
+const sequelize = db.sequelize
 
-const { QueryTypes } = require("sequelize");
+const { QueryTypes } = require('sequelize')
 
-module.exports = (app) => {
-  app.get("/api/users", async (req, res) => {
-  //   Users.findAll()
-  //     .then((data) => {
-  //       res.send({ data });
-  //     })
-  //     .catch((err) => {
-  //       res.status(503).send({
-  //         message:
-  //           err.message ||
-  //           "Some error occurred while fetching users information from database.",
-  //       });
-	// 	  });
+module.exports = app => {
+  app.get('/api/users', async (req, res) => {
+    //   Users.findAll()
+    //     .then((data) => {
+    //       res.send({ data });
+    //     })
+    //     .catch((err) => {
+    //       res.status(503).send({
+    //         message:
+    //           err.message ||
+    //           "Some error occurred while fetching users information from database.",
+    //       });
+    // 	  });
 
-		var blockQuery = `SELECT BlockList FROM register WHERE id=${req.query.id}`
-		const blockRecords = await sequelize.query(blockQuery, {
-			type: QueryTypes.SELECT
-		})
-		var blockListStr = blockRecords[0].BlockList;
+    var blockQuery = `SELECT BlockList FROM register WHERE id=${req.query.id}`
+    const blockRecords = await sequelize.query(blockQuery, {
+      type: QueryTypes.SELECT
+    })
+    var blockListStr = blockRecords[0].BlockList
 
-		console.log("blocklist === ", blockRecords[0].BlockList)
+    console.log('blocklist === ', blockRecords[0].BlockList)
 
-		var sqlQuery = `						
+    var sqlQuery = `						
 			SELECT aa.*, bb.sum_unread
 			FROM (
 				SELECT  *
@@ -43,7 +43,11 @@ module.exports = (app) => {
 								register.ID NOT IN (${blockListStr ? blockListStr : req.query.id})
 						) AS a_register
 						LEFT JOIN chathistory
-						ON (a_register.ID = chathistory.from AND chathistory.to=${req.query.id}) OR (a_register.ID = chathistory.to AND chathistory.from=${req.query.id} )
+						ON (a_register.ID = chathistory.from AND chathistory.to=${
+              req.query.id
+            }) OR (a_register.ID = chathistory.to AND chathistory.from=${
+      req.query.id
+    } )
 						ORDER BY chathistory.id ASC
 						) AS temp
 					) q
@@ -72,9 +76,8 @@ module.exports = (app) => {
 		`
     const records = await sequelize.query(sqlQuery, {
       type: QueryTypes.SELECT
-		})
-		console.log("database result", records)
-		res.send({ users: records });
-		
-  });
-};
+    })
+    console.log('database result', records)
+    res.send({ users: records })
+  })
+}
