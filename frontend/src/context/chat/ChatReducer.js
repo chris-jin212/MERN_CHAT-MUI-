@@ -10,8 +10,10 @@ import {
   SET_USER_ACTIVE,
   SET_USER_IN_ACTIVE,
   SET_SHOW_USER_LIST,
-  SHOW_TARGET_DETAIL_SIDEBAR,
-  SET_TARGET_DETAILS_INFO
+  SHOW_DETAIL_SIDEBAR,
+  SET_TARGET_DETAILS_INFO,
+  CHANGE_IMAGE_HASH,
+  CHANGE_PROFILE_IMAGE
 } from '../types';
 
 export default (state, action) => {
@@ -21,6 +23,7 @@ export default (state, action) => {
         ...state,
         usersList: action.data
       };
+
     case SET_SIGNEDIN_USER:
       return {
         ...state,
@@ -41,6 +44,7 @@ export default (state, action) => {
             )
           : ''
       };
+
     case SET_TARGET_USER:
       return {
         ...state,
@@ -55,6 +59,7 @@ export default (state, action) => {
           messages: []
         }
       };
+
     case SET_NEW_CHAT_DATA:
       return {
         ...state,
@@ -62,11 +67,13 @@ export default (state, action) => {
           messages: [...state.chatData.messages, action.data]
         }
       };
+
     case SET_FILTER_CATEGORY:
       return {
         ...state,
         filterCategory: action.data
       };
+
     case SET_BLOCK_USER:
       return {
         ...state,
@@ -77,6 +84,7 @@ export default (state, action) => {
         targetUserDetails: {},
         isSelectedUser: false
       };
+
     case CHANGE_USERS_LIST:
       return {
         ...state,
@@ -91,6 +99,7 @@ export default (state, action) => {
             : user
         )
       };
+
     case LOAD_CHAT_DATA:
       return {
         ...state,
@@ -111,22 +120,41 @@ export default (state, action) => {
             : user
         )
       };
+
     case SET_SHOW_USER_LIST:
       return {
         ...state,
         showUserList: action.data
       };
 
-    case SHOW_TARGET_DETAIL_SIDEBAR:
+    case SHOW_DETAIL_SIDEBAR:
       return {
         ...state,
-        showTargetDetail: action.data
+        showDetail: action.data.show,
+        detailMode: action.data.mode
       };
+
     case SET_TARGET_DETAILS_INFO:
       return {
         ...state,
         targetUserDetails: { ...action.data }
       };
+
+    case CHANGE_IMAGE_HASH:
+      return {
+        ...state,
+        imageHash: action.data
+      };
+
+    case CHANGE_PROFILE_IMAGE:
+      return {
+        ...state,
+        signedInUser: {
+          ...state.signedInUser,
+          Avatar: action.data
+        }
+      };
+
     default:
       return state;
   }

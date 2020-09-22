@@ -21,9 +21,11 @@ const UserList = props => {
     filterCategory,
     signedInUser,
     showUserList,
+    imageHash,
     handleSetTargetUser,
     handleSetFilterCategory,
-    handleShowUserList
+    handleShowUserList,
+    handleUserDetail
   } = chatContext;
 
   const getFilteredUserList = () => {
@@ -59,15 +61,26 @@ const UserList = props => {
           <div>
             <Avatar
               src={
-                signedInUser.Avatar
-                  ? `${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`
+                signedInUser.Avatar !== undefined
+                  ? `${process.env.REACT_APP_SERVER_URI}/public/avatar/${
+                      signedInUser.Avatar === ''
+                        ? `${
+                            signedInUser.Gender === 'Male'
+                              ? 'male.png'
+                              : 'female.png'
+                          }`
+                        : signedInUser.Avatar
+                    }?${imageHash}`
                   : ``
               }
               alt={'logo'}
               size="large"
               type="circle flexible"
             />
-            <div className="user-info">
+            <div
+              className="user-info"
+              onClick={() => handleUserDetail('signed-in', true)}
+            >
               <p className="navBarText">{signedInUser.Name}</p>
             </div>
           </div>
@@ -135,7 +148,14 @@ const UserList = props => {
           className="chat-list"
           dataSource={users.map((f, i) => {
             return {
-              avatar: `${process.env.REACT_APP_SERVER_URI}/public/avatar/${f.Avatar}`,
+              avatar:
+                f.Avatar !== null
+                  ? `${process.env.REACT_APP_SERVER_URI}/public/avatar/${
+                      f.Avatar === ''
+                        ? `${f.Gender === 'Male' ? 'male.png' : 'female.png'}`
+                        : f.Avatar
+                    }?${imageHash}`
+                  : ``,
               alt: f.id,
               title: f.Name,
               subtitle: f.lastMessage,

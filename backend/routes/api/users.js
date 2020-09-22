@@ -8,25 +8,11 @@ const { QueryTypes } = require('sequelize');
 
 module.exports = app => {
   app.get('/api/users', async (req, res) => {
-    //   Users.findAll()
-    //     .then((data) => {
-    //       res.send({ data });
-    //     })
-    //     .catch((err) => {
-    //       res.status(503).send({
-    //         message:
-    //           err.message ||
-    //           "Some error occurred while fetching users information from database.",
-    //       });
-    // 	  });
-
     var blockQuery = `SELECT BlockList FROM register WHERE id=${req.query.id}`;
     const blockRecords = await sequelize.query(blockQuery, {
       type: QueryTypes.SELECT
     });
     var blockListStr = blockRecords[0].BlockList;
-
-    console.log('blocklist === ', blockRecords[0].BlockList);
 
     var sqlQuery = `						
 			SELECT aa.*, bb.sum_unread
@@ -77,7 +63,6 @@ module.exports = app => {
     const records = await sequelize.query(sqlQuery, {
       type: QueryTypes.SELECT
     });
-    console.log('database result', records);
     res.send({ users: records });
   });
 };

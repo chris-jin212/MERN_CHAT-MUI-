@@ -1,6 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
-    const Users = sequelize.define("register", {
-			Prefix: {
+  const Users = sequelize.define(
+    'register',
+    {
+      Prefix: {
         type: Sequelize.STRING
       },
       ConfirmEmail: {
@@ -12,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
       Lastname: {
         type: Sequelize.BOOLEAN
       },
-      Gender: {        
+      Gender: {
         type: Sequelize.BOOLEAN
       },
       Avatar: {
@@ -29,6 +31,36 @@ module.exports = (sequelize, Sequelize) => {
       },
       BlockList: {
         type: Sequelize.STRING
+      },
+      DOB: {
+        type: Sequelize.STRING
+      },
+      Religion: {
+        type: Sequelize.STRING
+      },
+      Language: {
+        type: Sequelize.STRING
+      },
+      Height: {
+        type: Sequelize.STRING
+      },
+      Weight: {
+        type: Sequelize.STRING
+      },
+      City: {
+        type: Sequelize.STRING
+      },
+      State: {
+        type: Sequelize.STRING
+      },
+      Country: {
+        type: Sequelize.STRING
+      },
+      Phone: {
+        type: Sequelize.STRING
+      },
+      Mobile: {
+        type: Sequelize.STRING
       }
     },
     {
@@ -36,9 +68,9 @@ module.exports = (sequelize, Sequelize) => {
       // disable the modification of table names; By default, sequelize will automatically
       // transform all passed model names (first parameter of define) into plural.
       // if you don't want that, set the following
-      freezeTableName: true,
-    });
-  
-    return Users;
-  };
-  
+      freezeTableName: true
+    }
+  );
+
+  return Users;
+};

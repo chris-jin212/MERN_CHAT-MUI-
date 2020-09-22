@@ -42,6 +42,7 @@
   margin-left: 6px;
   margin-bottom: 0;
   font-family: 'Roboto', sans-serif;
+  cursor: pointer;
 }
 
 .user-info p.user-name {

@@ -16,8 +16,10 @@ import {
   SET_USER_IN_ACTIVE,
   SET_USER_ACTIVE,
   SET_SHOW_USER_LIST,
-  SHOW_TARGET_DETAIL_SIDEBAR,
-  SET_TARGET_DETAILS_INFO
+  SHOW_DETAIL_SIDEBAR,
+  SET_TARGET_DETAILS_INFO,
+  CHANGE_IMAGE_HASH,
+  CHANGE_PROFILE_IMAGE
 } from '../types';
 
 const ChatState = props => {
@@ -31,6 +33,8 @@ const ChatState = props => {
     isSelectedUser: false,
     showSettingsModal: false,
     showUserList: true,
+    detailMode: '',
+    iamgeHash: new Date(),
     error: false,
     errorMessage: ''
   };
@@ -169,11 +173,11 @@ const ChatState = props => {
     } catch {}
   };
 
-  const handleTargetUserDetail = async (targetUserId, show) => {
+  const handleUserDetail = async (mode, show) => {
     try {
       dispatch({
-        type: SHOW_TARGET_DETAIL_SIDEBAR,
-        data: show
+        type: SHOW_DETAIL_SIDEBAR,
+        data: { show, mode }
       });
     } catch {}
   };
@@ -183,6 +187,24 @@ const ChatState = props => {
       dispatch({
         type: SET_TARGET_DETAILS_INFO,
         data: userInfo
+      });
+    } catch {}
+  };
+
+  const handleChangeImageHash = async data => {
+    try {
+      dispatch({
+        type: CHANGE_IMAGE_HASH,
+        data
+      });
+    } catch {}
+  };
+
+  const handleChangeProfileImage = async data => {
+    try {
+      dispatch({
+        type: CHANGE_PROFILE_IMAGE,
+        data
       });
     } catch {}
   };
@@ -212,7 +234,9 @@ const ChatState = props => {
         errorMessage: state.errorMessage,
         showSettingsModal: state.showSettingsModal,
         showUserList: state.showUserList,
-        showTargetDetail: state.showTargetDetail,
+        showDetail: state.showDetail,
+        detailMode: state.detailMode,
+        imageHash: state.imageHash,
         handleSignIn,
         handleSetSignedInUser,
         handleLoadUsersList,
@@ -228,8 +252,10 @@ const ChatState = props => {
         handleChangeUsersList,
         handleInActiveUser,
         handleShowUserList,
-        handleTargetUserDetail,
+        handleUserDetail,
         handleTargetDetailsInfo,
+        handleChangeImageHash,
+        handleChangeProfileImage,
         handleSetErrorMessage,
         handleSetError
       }}

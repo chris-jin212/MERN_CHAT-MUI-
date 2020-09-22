@@ -1,4 +1,4 @@
-import React, { useContext, Fragment } from 'react';
+import React, { useState, useEffect, useContext, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Grid, Drawer, Divider } from '@material-ui/core';
@@ -23,6 +23,21 @@ import Title from 'components/common/Title';
 import Avatar from 'components/common/Avatar';
 
 import ChatContext from 'context/chat/ChatContext';
+
+const formRows = [
+  { title: 'User Email', value: 'ConfirmEmail', icon: mdiEmail },
+  { title: 'User Birthday', value: 'DOB', icon: mdiCalendarRange },
+  { title: 'User Education', value: 'Education', icon: mdiCastEducation },
+  { title: 'User Religion', value: 'Religion', icon: mdiBuddhism },
+  { title: 'User Language', value: 'Language', icon: mdiTranslate },
+  { title: 'User Height', value: 'Height', icon: mdiHumanMaleHeight },
+  { title: 'User Weight', value: 'Weight', icon: mdiWeight },
+  { title: 'User City', value: 'City', icon: mdiHomeCity },
+  { title: 'User State', value: 'State', icon: mdiStateMachine },
+  { title: 'User Country', value: 'Country', icon: mdiWeb },
+  { title: 'User Phone', value: 'Phone', icon: mdiPhoneClassic },
+  { title: 'User Mobile', value: 'Mobile', icon: mdiCellphone }
+];
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -52,31 +67,66 @@ const useStyles = makeStyles(theme => ({
 export default function TemporaryDrawer() {
   const classes = useStyles();
   const chatContext = useContext(ChatContext);
+  const [user, setUser] = useState({});
   const {
-    targetUser,
     targetUserDetails,
-    showTargetDetail,
-    handleTargetUserDetail
+    signedInUser,
+    detailMode,
+    imageHash,
+    showDetail,
+    handleUserDetail,
+    handleChangeImageHash,
+    handleChangeProfileImage
   } = chatContext;
 
-  const onCloseProfileDetails = () => {
-    handleTargetUserDetail(targetUser.id, false);
-  };
+  let uploadInput = null;
 
+  useEffect(() => {
+    if (detailMode === 'signed-in') {
+      setUser(signedInUser);
+    } else if (detailMode === 'target') {
+      setUser(targetUserDetails);
+    }
+  }, [detailMode, targetUserDetails, signedInUser]);
+
+  const handleUploadImage = ev => {
+    ev.preventDefault();
+
+    const data = new FormData();
+    data.append('file', uploadInput.files[0]);
+    data.append('fileName', signedInUser.Avatar);
+    data.append('userId', signedInUser.id);
+
+    fetch(`${process.env.REACT_APP_SERVER_URI}/api/profile/image`, {
+      method: 'POST',
+      body: data
+    })
+      .then(res => res.json())
+      .then(json => {
+        if (json.status) {
+          handleChangeProfileImage(json.fileName);
+          handleChangeImageHash(new Date());
+        } else {
+          alert('Server Error');
+        }
+      });
+  };
   return (
     <div>
       <Drawer
         anchor={'right'}
-        open={showTargetDetail}
-        onClose={() => handleTargetUserDetail(targetUser.id, false)}
+        open={showDetail}
+        onClose={() => handleUserDetail(detailMode, false)}
       >
         <Grid container spacing={1} className={classes.container}>
           <Grid container spacing={1}>
             <Grid item xs={12} className={classes.header}>
               <Title size={1.25} weight={500}>
-                Contact Info
+                {detailMode === 'target' ? 'Contact Info' : 'Personal Info'}
               </Title>
-              <CloseButton onClick={() => onCloseProfileDetails()} />
+              <CloseButton
+                onClick={() => handleUserDetail(detailMode, false)}
+              />
             </Grid>
           </Grid>
           <Grid container spacing={1}>
@@ -86,15 +136,33 @@ export default function TemporaryDrawer() {
           </Grid>
           <Grid container spacing={1}>
             <Grid item xs={12} className={classes.avatarName}>
-              <Avatar
-                src={`${process.env.REACT_APP_SERVER_URI}/public/avatar/${targetUserDetails.Avatar}`}
-                size={9.375}
-              />
+              <label htmlFor="imageUpload">
+                <Avatar
+                  src={`${process.env.REACT_APP_SERVER_URI}/public/avatar/${
+                    user.Avatar === ''
+                      ? `${user.Gender === 'Male' ? 'male.png' : 'female.png'}`
+                      : user.Avatar
+                  }?${imageHash}`}
+                  size={9.375}
+                />
+              </label>
+              {detailMode === 'signed-in' ? (
+                <input
+                  ref={ref => (uploadInput = ref)}
+                  onChange={e => handleUploadImage(e)}
+                  type="file"
+                  id="imageUpload"
+                  accept=".png, .jpg, .jpeg"
+                  style={{ display: 'none' }}
+                />
+              ) : (
+                ''
+              )}
               <Title size={1.5} weight={600} py={0.8}>
-                {targetUserDetails.Name}
+                {user.Name}
               </Title>
               <Title size={0.75} transform={'uppercase'}>
-                {targetUserDetails.Occupation}
+                {user.Occupation}
               </Title>
             </Grid>
           </Grid>
@@ -106,259 +174,31 @@ export default function TemporaryDrawer() {
           </Grid>
 
           <Grid container spacing={1} className={classes.body}>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Email" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiEmail}
-                      title="User Email"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Email" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.ConfirmEmail}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Birthday" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiCalendarRange}
-                      title="User Birthday"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Birthday" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.DOB}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Education" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiCastEducation}
-                      title="User Education"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Education" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.Education}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Religion" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiBuddhism}
-                      title="User Religion"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Religion" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.Religion}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Language" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiTranslate}
-                      title="User Language"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Language" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.Language}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Height" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiHumanMaleHeight}
-                      title="User Height"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Height" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.Height}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Weight" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiWeight}
-                      title="User Weight"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Weight" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.Weight}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User City" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiHomeCity}
-                      title="User City"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User City" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.City}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User State" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiStateMachine}
-                      title="User State"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User State" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.State}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Country" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiWeb}
-                      title="User Country"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Country" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.Country}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Phone" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiPhoneClassic}
-                      title="User Phone"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Phone" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.Phone}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Grid container className={classes.body_item}>
-              <Grid item xs={2}>
-                <Tooltip title="User Mobile" arrow>
-                  <Fragment>
-                    <Icon
-                      path={mdiCellphone}
-                      title="User Mobile"
-                      size={1}
-                      color="gray"
-                    />
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={10}>
-                <Tooltip title="User Mobile" arrow>
-                  <Fragment>
-                    <Title size={1}>{targetUserDetails.Mobile}</Title>
-                  </Fragment>
-                </Tooltip>
-              </Grid>
-            </Grid>
+            {formRows.map(row => {
+              return (
+                <Grid container className={classes.body_item} key={row.title}>
+                  <Grid item xs={2}>
+                    <Tooltip title={row.title} arrow>
+                      <Fragment>
+                        <Icon
+                          path={row.icon}
+                          title={row.title}
+                          size={1}
+                          color="gray"
+                        />
+                      </Fragment>
+                    </Tooltip>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <Tooltip title={row.title} arrow>
+                      <Fragment>
+                        <Title size={1}>{user[row.value]}</Title>
+                      </Fragment>
+                    </Tooltip>
+                  </Grid>
+                </Grid>
+              );
+            })}
           </Grid>
         </Grid>
       </Drawer>

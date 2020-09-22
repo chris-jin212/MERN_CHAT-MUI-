@@ -39,10 +39,11 @@ const ChatBox = props => {
     chatData,
     isSelectedUser,
     showUserList,
+    imageHash,
     handleSendChatData,
     handleBlockUser,
     handleShowUserList,
-    handleTargetUserDetail
+    handleUserDetail
   } = chatContext;
 
   var setDomEditorRef = React.useRef();
@@ -128,7 +129,7 @@ const ChatBox = props => {
   const onSelectDropdownItem = e => {
     switch (e) {
       case 0:
-        return;
+        handleUserDetail('signed-in', true);
       case 1:
         handleBlockUser(signedInUser.id, targetUser.id);
         break;
@@ -141,7 +142,7 @@ const ChatBox = props => {
   };
 
   const onClickTargetUserDetail = () => {
-    handleTargetUserDetail(targetUser.id, true);
+    handleUserDetail('target', true);
   };
 
   return (
@@ -164,12 +165,23 @@ const ChatBox = props => {
                       title="User Profile"
                       size={1.1}
                       color="rgb(162 162 162)"
-                      // onClick={() => handleShowUserList(!showUserList)}
                     />
                   </IconButton>
                 </Col>
                 <Avatar
-                  src={`${process.env.REACT_APP_SERVER_URI}/public/avatar/${targetUser.Avatar}`}
+                  src={
+                    targetUser.Avatar !== null
+                      ? `${process.env.REACT_APP_SERVER_URI}/public/avatar/${
+                          targetUser.Avatar === ''
+                            ? `${
+                                targetUser.Gender === 'Male'
+                                  ? 'male.png'
+                                  : 'female.png'
+                              }`
+                            : targetUser.Avatar
+                        }?${imageHash}`
+                      : ``
+                  }
                   alt={'logo'}
                   size="large"
                   type="circle flexible"
@@ -282,8 +294,16 @@ const ChatBox = props => {
           <Jumbotron>
             <img
               src={
-                signedInUser.Avatar
-                  ? `${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`
+                signedInUser.Avatar !== undefined
+                  ? `${process.env.REACT_APP_SERVER_URI}/public/avatar/${
+                      signedInUser.Avatar === ''
+                        ? `${
+                            signedInUser.Gender === 'Male'
+                              ? 'male.png'
+                              : 'female.png'
+                          }`
+                        : signedInUser.Avatar
+                    }?${imageHash}`
                   : ``
               }
               alt={signedInUser.Avatar}
