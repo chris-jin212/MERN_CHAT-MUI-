@@ -8,7 +8,7 @@ import {
   Avatar,
   Dropdown
 } from 'react-chat-elements';
-import { mdiPaperclip, mdiDotsVertical, mdiArrowLeftBold } from '@mdi/js';
+import { mdiPaperclip, mdiDotsVertical, mdiArrowLeft } from '@mdi/js';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@mdi/react';
 import {
@@ -22,6 +22,10 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import './index.css';
+
+import SendButton from 'components/common/SendButton';
+import FileAttatch from 'components/common/FileAttatch';
 
 import ChatContext from 'context/chat/ChatContext';
 
@@ -37,7 +41,8 @@ const ChatBox = props => {
     showUserList,
     handleSendChatData,
     handleBlockUser,
-    handleShowUserList
+    handleShowUserList,
+    handleTargetUserDetail
   } = chatContext;
 
   var setDomEditorRef = React.useRef();
@@ -101,6 +106,7 @@ const ChatBox = props => {
     var messageText = draftToHtml(
       convertToRaw(editorState.getCurrentContent())
     );
+    messageText = messageText.replace(/&nbsp;/g, '');
     if (messageText === '<p></p>\n') {
       return false;
     }
@@ -127,10 +133,15 @@ const ChatBox = props => {
         handleBlockUser(signedInUser.id, targetUser.id);
         break;
       case 2:
-        return;
+        window.location.href = 'http://rishtay.club/';
+        break;
       default:
         return false;
     }
+  };
+
+  const onClickTargetUserDetail = () => {
+    handleTargetUserDetail(targetUser.id, true);
   };
 
   return (
@@ -139,8 +150,8 @@ const ChatBox = props => {
         <div>
           <NavbarComponent
             left={
-              <div>
-                <Col mdHidden lgHidden>
+              <div className="target-profile">
+                <Col mdHidden lgHidden className="toggle-btn-container">
                   <IconButton
                     color="inherit"
                     aria-label="open drawer"
@@ -149,11 +160,11 @@ const ChatBox = props => {
                     className="toggle-btn"
                   >
                     <Icon
-                      path={mdiArrowLeftBold}
+                      path={mdiArrowLeft}
                       title="User Profile"
-                      size={1.3}
+                      size={1.1}
                       color="rgb(162 162 162)"
-                      onClick={() => handleShowUserList(!showUserList)}
+                      // onClick={() => handleShowUserList(!showUserList)}
                     />
                   </IconButton>
                 </Col>
@@ -163,7 +174,7 @@ const ChatBox = props => {
                   size="large"
                   type="circle flexible"
                 />
-                <div className="user-info">
+                <div className="user-info" onClick={onClickTargetUserDetail}>
                   <p className="navBarText user-name">{targetUser.Name}</p>
                   <p className="navBarText user-title">{`${targetUser.Gender} ${targetUser.Age} ${targetUser.Country}`}</p>
                 </div>
@@ -230,7 +241,7 @@ const ChatBox = props => {
                 }
               }}
             />
-            <label htmlFor="attachFile" className="attach-file">
+            <FileAttatch htmlFor="attachFile">
               <Icon
                 path={mdiPaperclip}
                 size={1}
@@ -238,9 +249,9 @@ const ChatBox = props => {
                 vertical
                 rotate={225}
                 color={'#949aa2'}
+                className={'file-attach'}
               />
-              <i className="fas fa-paperclip toggle-icon"></i>
-            </label>
+            </FileAttatch>
             <input
               ref={attachFileRef}
               onChange={e => onAttachFile(e)}
@@ -249,7 +260,7 @@ const ChatBox = props => {
               accept=".png, .jpg, .jpeg"
             />
 
-            <div className="sendButton" onClick={() => onSendClicked()}>
+            <SendButton onClick={() => onSendClicked()}>
               <svg
                 className="jss4"
                 focusable="false"
@@ -263,14 +274,18 @@ const ChatBox = props => {
                 ></path>
                 <path fill="none" d="M0 0h24v24H0z"></path>
               </svg>
-            </div>
+            </SendButton>
           </FormGroup>
         </div>
       ) : (
         <div className="landing-container">
           <Jumbotron>
             <img
-              src={`${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`}
+              src={
+                signedInUser.Avatar
+                  ? `${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`
+                  : ``
+              }
               alt={signedInUser.Avatar}
             ></img>
             <div className="landing-name">

@@ -9,7 +9,9 @@ import {
   CHANGE_USERS_LIST,
   SET_USER_ACTIVE,
   SET_USER_IN_ACTIVE,
-  SET_SHOW_USER_LIST
+  SET_SHOW_USER_LIST,
+  SHOW_TARGET_DETAIL_SIDEBAR,
+  SET_TARGET_DETAILS_INFO
 } from '../types';
 
 export default (state, action) => {
@@ -70,7 +72,10 @@ export default (state, action) => {
         ...state,
         usersList: state.usersList.filter(
           ({ id }) => id !== action.targetUserId
-        )
+        ),
+        targetUser: {},
+        targetUserDetails: {},
+        isSelectedUser: false
       };
     case CHANGE_USERS_LIST:
       return {
@@ -110,6 +115,17 @@ export default (state, action) => {
       return {
         ...state,
         showUserList: action.data
+      };
+
+    case SHOW_TARGET_DETAIL_SIDEBAR:
+      return {
+        ...state,
+        showTargetDetail: action.data
+      };
+    case SET_TARGET_DETAILS_INFO:
+      return {
+        ...state,
+        targetUserDetails: { ...action.data }
       };
     default:
       return state;

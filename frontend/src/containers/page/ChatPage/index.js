@@ -14,6 +14,7 @@ import ChatContext from 'context/chat/ChatContext';
 
 import UserList from 'components/UserList/index';
 import ChatBox from 'components/ChatBox/index';
+import ProfileBox from 'components/ProfileBox';
 
 const ChatPage = props => {
   const [socket, setSocket] = useState(null);
@@ -34,7 +35,8 @@ const ChatPage = props => {
     handleReceivedMessageSave,
     handleChangeUsersList,
     handleLoadChatData,
-    handleInActiveUser
+    handleInActiveUser,
+    handleTargetDetailsInfo
   } = chatContext;
 
   useEffect(() => {
@@ -59,6 +61,7 @@ const ChatPage = props => {
       handleLoadUsersList(users);
     });
     initialSocketConnection();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -66,6 +69,7 @@ const ChatPage = props => {
       socket.off();
       setupSocketListeners();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, targetUser, chatData, usersList]);
 
   const fetchSession = () => {
@@ -91,6 +95,7 @@ const ChatPage = props => {
     socket.on('message', e => onMessageRecieved(e));
     socket.on('block-user-success', e => onBlockUserSuccess(e));
     socket.on('in-active', e => onHandleInActiveUser(e));
+    socket.on('target-details', e => onHandleTargetDetailsInfo(e));
     socket.on('reconnect', () => onReconnection());
     socket.on('disconnect', () => onClientDisconnected());
   };
@@ -110,7 +115,7 @@ const ChatPage = props => {
       var messageData = {};
       messageData.type = 'text';
       messageData.text = data.content;
-      messageData.className = 'message';
+      // messageData.className = 'message';
       if (Number(data.from) === Number(signedInUser.id)) {
         messageData.position = 'right';
         messageData.renderAddCmp = () => {
@@ -125,9 +130,11 @@ const ChatPage = props => {
           messageData.date = '';
           messageData.dateString = '';
           messageData.avatar = '';
+          messageData.className = '';
         } else {
           messageData.dateString = moment(data.time).format('hh:mm A');
           messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`;
+          messageData.className = 'message';
         }
       } else {
         messageData.position = 'left';
@@ -143,9 +150,11 @@ const ChatPage = props => {
           messageData.date = '';
           messageData.dateString = '';
           messageData.avatar = '';
+          messageData.className = '';
         } else {
           messageData.dateString = moment(data.time).format('hh:mm A');
           messageData.avatar = `${process.env.REACT_APP_SERVER_URI}/public/avatar/${targetUser.Avatar}`;
+          messageData.className = 'message';
         }
       }
       tempChatData = [...tempChatData, messageData];
@@ -210,6 +219,7 @@ const ChatPage = props => {
           prevMessage.dateString = '';
           prevMessage.date = '';
           prevMessage.avatar = '';
+          prevMessage.className = '';
         }
       }
     }
@@ -231,6 +241,10 @@ const ChatPage = props => {
 
   const onHandleInActiveUser = e => {
     handleInActiveUser(e);
+  };
+
+  const onHandleTargetDetailsInfo = e => {
+    handleTargetDetailsInfo(e);
   };
 
   const onClientDisconnected = () => {
@@ -278,6 +292,7 @@ const ChatPage = props => {
           </Col>
         </Row>
       </Grid>
+      <ProfileBox />
     </Fragment>
   );
 };

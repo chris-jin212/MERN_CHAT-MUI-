@@ -32,17 +32,22 @@
   content: none !important;
 }
 
-.rce-container-mbox .message {
-  position: relative;
-}
-
 .rce-mbox-right,
 .rce-mbox-left {
   position: absolute;
 }
 
-.rce-container-mbox {
+.rce-container-mlist > .rce-mlist > .rce-container-mbox {
+  margin: 0px;
+  padding: 0px 50px 7px 50px;
+  max-width: 1140px;
+  margin-left: auto;
+  margin-right: auto;
   position: relative;
+}
+
+.rce-container-mlist > .rce-mlist > .message {
+  padding: 0px 50px 20px 50px;
 }
 
 .rce-mbox {
@@ -112,8 +117,8 @@
   display: none;
 }
 
-.attach-file {
-  cursor: pointer;
+.file-attach:hover path {
+  fill: #007bff !important;
 }
 
 .rdw-editor-wrapper {
@@ -247,13 +252,14 @@
   display: none;
 }
 
-.toggle-btn {
-  color: #7d7373 !important;
+.toggle-btn-container > .toggle-btn {
+  padding: 2px;
   width: 40px;
-  height: 40px;
-  padding: 5px;
 }
 
+.MuiDrawer-paperAnchorRight {
+  overflow-x: hidden;
+}
 @media only screen and (max-width: 992px) {
   .container .show-grid .hidden-sm,
   .container .show-grid .hidden-xs {
@@ -264,14 +270,40 @@
   .hidden-lg {
     display: block;
   }
+
+  .target-profile > .toggle-btn-container {
+    display: flex;
+  }
 }
 
 @media only screen and (max-width: 600px) {
-  .rce-container-mlist > .rce-mlist > .rce-container-mbox {
-    padding: 0px 10px 20px 50px !important;
-  }
   .rce-container-mlist > .rce-mlist {
     padding: 0px 5px;
+  }
+
+  .rce-container-mlist > .rce-mlist > .rce-container-mbox {
+    padding: 0px 10px 7px 50px;
+  }
+
+  .rce-container-mlist > .rce-mlist > .message {
+    padding: 0px 10px 20px 50px;
+  }
+  .chat-body > div > .send-message-form {
+    height: 65px;
+  }
+  .chat-body > div > .message-list {
+    height: calc(100vh - 143px);
+  }
+  .rdw-editor-main {
+    padding: 0px 15px;
+  }
+
+  .rdw-editor-main img {
+    max-height: 30px;
+  }
+
+  .message-text img {
+    height: 70px;
   }
 }
 

@@ -45,11 +45,17 @@ function initSocket(client) {
 
   client.on('load-chat-history', async e => {
     console.log('e chat history', e);
-    var selQuery = `SELECT * FROM chathistory WHERE (chathistory.from=${e.signedInUserId} AND chathistory.to=${e.targetUserId}) OR (chathistory.from=${e.targetUserId} AND chathistory.to=${e.signedInUserId})`;
-    const records = await sequelize.query(selQuery, {
+    var selHistoryQuery = `SELECT * FROM chathistory WHERE (chathistory.from=${e.signedInUserId} AND chathistory.to=${e.targetUserId}) OR (chathistory.from=${e.targetUserId} AND chathistory.to=${e.signedInUserId})`;
+    const records = await sequelize.query(selHistoryQuery, {
       type: QueryTypes.SELECT
     });
     client.emit('load-chat-history', records);
+
+    var selDetailsQuery = `SELECT * FROM register WHERE (register.ID=${e.targetUserId})`;
+    const detailsResult = await sequelize.query(selDetailsQuery, {
+      type: QueryTypes.SELECT
+    });
+    client.emit('target-details', detailsResult[0]);
 
     var updateQuery = `UPDATE chathistory SET unread=0 WHERE (chathistory.from=${e.signedInUserId} AND chathistory.to=${e.targetUserId} AND chathistory.unread=1) OR (chathistory.from=${e.targetUserId} AND chathistory.to=${e.signedInUserId} AND chathistory.unread=1)`;
     await sequelize.query(updateQuery, {

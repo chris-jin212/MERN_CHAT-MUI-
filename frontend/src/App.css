@@ -20,7 +20,7 @@
 }
 
 .chat-list {
-  height: calc( 100vh - 140px ) !important;
+  height: calc(100vh - 140px) !important;
   background-color: white;
   height: 100%;
 }
@@ -41,7 +41,7 @@
   justify-content: center;
   margin-left: 6px;
   margin-bottom: 0;
-  font-family: "Roboto", sans-serif
+  font-family: 'Roboto', sans-serif;
 }
 
 .user-info p.user-name {
@@ -116,14 +116,6 @@
   background: #007bff !important;
 }
 
-.rce-container-mbox {
-  margin: 0px !important;
-  padding: 0px 50px 20px 50px !important;
-  max-width: 1140px;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
 .rce-container-citem {
   border-bottom: 1px solid #dadce0;
   height: 71px;
@@ -140,7 +132,7 @@
   border-radius: 50%;
 }
 
-.rce-citem-avatar>.rce-avatar-container.large {
+.rce-citem-avatar > .rce-avatar-container.large {
   width: 50px;
   height: 50px;
 }
@@ -160,8 +152,8 @@
 }
 
 .rce-mbox .rce-mbox-time {
-  bottom: -40px;
-  left: -12px;
+  bottom: -37px;
+  left: -30px;
   right: auto;
 }
 
@@ -174,7 +166,7 @@ body {
   background-color: #e6e6e6;
 }
 
-#root>div>.container {
+#root > div > .container {
   padding: 0px;
 }
 
@@ -183,6 +175,7 @@ body {
 }
 
 .send-message-form {
+  position: relative;
   height: 85px;
   background: #fff;
   display: flex;
@@ -204,27 +197,6 @@ body {
   border-radius: 50px !important;
 }
 
-.sendButton,
-.sendButton:hover,
-.sendButton:focus {
-  cursor: pointer;
-  width: 48px;
-  height: 45px;
-  border-radius: 50px !important;
-  background: #1d84f3;
-  margin: 0px 15px 0px 5px
-}
-
-
-.sendButton svg {
-  width: 60%;
-  height: 60%;
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .user-list-sidebar {
   display: inline-block;
   width: 420px;
@@ -235,31 +207,31 @@ body {
 
 .chat-body {
   display: inline-block;
-  width: calc( 100% - 420px);
+  width: calc(100% - 420px);
   padding: 0px 0px 0px 0px;
 }
 
 @media only screen and (max-width: 1600px) {
   .user-list-sidebar {
-      width: 350px;
-      max-width: 350px;
-      padding: 0px 0px 0px 0px;
-      height: 100%;
+    width: 350px;
+    max-width: 350px;
+    padding: 0px 0px 0px 0px;
+    height: 100%;
   }
   .chat-body {
-      width: calc( 100% - 350px);
+    width: calc(100% - 350px);
   }
 }
 
 @media only screen and (max-width: 992px) {
   .user-list-sidebar {
-      max-width: 100%;
-      width: 100%;
+    max-width: 100%;
+    width: 100%;
   }
   .chat-body {
-      width: 100%;
+    width: 100%;
   }
   .rce-mbox {
-      max-width: 80%;
+    max-width: 80%;
   }
 }

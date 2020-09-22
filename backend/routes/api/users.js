@@ -1,10 +1,10 @@
-const jwt = require('jsonwebtoken')
-const db = require('../../models')
-const Users = db.users
-const Op = db.Sequelize.Op
-const sequelize = db.sequelize
+const jwt = require('jsonwebtoken');
+const db = require('../../models');
+const Users = db.users;
+const Op = db.Sequelize.Op;
+const sequelize = db.sequelize;
 
-const { QueryTypes } = require('sequelize')
+const { QueryTypes } = require('sequelize');
 
 module.exports = app => {
   app.get('/api/users', async (req, res) => {
@@ -20,20 +20,20 @@ module.exports = app => {
     //       });
     // 	  });
 
-    var blockQuery = `SELECT BlockList FROM register WHERE id=${req.query.id}`
+    var blockQuery = `SELECT BlockList FROM register WHERE id=${req.query.id}`;
     const blockRecords = await sequelize.query(blockQuery, {
       type: QueryTypes.SELECT
-    })
-    var blockListStr = blockRecords[0].BlockList
+    });
+    var blockListStr = blockRecords[0].BlockList;
 
-    console.log('blocklist === ', blockRecords[0].BlockList)
+    console.log('blocklist === ', blockRecords[0].BlockList);
 
     var sqlQuery = `						
 			SELECT aa.*, bb.sum_unread
 			FROM (
 				SELECT  *
 				FROM    (
-					SELECT  *, ROW_NUMBER() OVER (PARTITION BY uniId ORDER BY time DESC) rn
+					SELECT  *, ROW_NUMBER() OVER (PARTITION BY uniId ORDER BY id DESC) rn
 					FROM (
 						SELECT a_register.Name, a_register.ID AS uniId, a_register.Gender, a_register.Avatar, a_register.Active, a_register.Country, a_register.Age, chathistory.*
 						FROM (
@@ -73,11 +73,11 @@ module.exports = app => {
 				ORDER BY id DESC
 			) AS bb
 			ON aa.uniId = bb.uniId
-		`
+		`;
     const records = await sequelize.query(sqlQuery, {
       type: QueryTypes.SELECT
-    })
-    console.log('database result', records)
-    res.send({ users: records })
-  })
-}
+    });
+    console.log('database result', records);
+    res.send({ users: records });
+  });
+};

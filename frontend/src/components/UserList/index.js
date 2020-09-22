@@ -5,7 +5,6 @@ import {
   Avatar
 } from 'react-chat-elements';
 import {
-  mdiDotsVertical,
   mdiMessageText,
   mdiAccountTie,
   mdiFaceWoman,
@@ -59,7 +58,11 @@ const UserList = props => {
         left={
           <div>
             <Avatar
-              src={`${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`}
+              src={
+                signedInUser.Avatar
+                  ? `${process.env.REACT_APP_SERVER_URI}/public/avatar/${signedInUser.Avatar}`
+                  : ``
+              }
               alt={'logo'}
               size="large"
               type="circle flexible"
@@ -67,18 +70,6 @@ const UserList = props => {
             <div className="user-info">
               <p className="navBarText">{signedInUser.Name}</p>
             </div>
-          </div>
-        }
-        right={
-          <div>
-            <Icon
-              path={mdiDotsVertical}
-              size={1}
-              horizontal
-              vertical
-              rotate={180}
-              color={'#949aa2'}
-            />
           </div>
         }
       />

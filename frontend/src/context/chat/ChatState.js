@@ -15,14 +15,17 @@ import {
   CHANGE_USERS_LIST,
   SET_USER_IN_ACTIVE,
   SET_USER_ACTIVE,
-  SET_SHOW_USER_LIST
+  SET_SHOW_USER_LIST,
+  SHOW_TARGET_DETAIL_SIDEBAR,
+  SET_TARGET_DETAILS_INFO
 } from '../types';
 
 const ChatState = props => {
   const initialState = {
     signedInUser: {},
     targetUser: {},
-    usersList: {},
+    targetUserDetails: {},
+    usersList: [],
     chatData: {},
     filterCategory: 'all',
     isSelectedUser: false,
@@ -166,6 +169,24 @@ const ChatState = props => {
     } catch {}
   };
 
+  const handleTargetUserDetail = async (targetUserId, show) => {
+    try {
+      dispatch({
+        type: SHOW_TARGET_DETAIL_SIDEBAR,
+        data: show
+      });
+    } catch {}
+  };
+
+  const handleTargetDetailsInfo = async userInfo => {
+    try {
+      dispatch({
+        type: SET_TARGET_DETAILS_INFO,
+        data: userInfo
+      });
+    } catch {}
+  };
+
   const handleSetErrorMessage = async data => {
     try {
     } catch {}
@@ -182,6 +203,7 @@ const ChatState = props => {
         chatState: state, // Test for development mode
         signedInUser: state.signedInUser,
         targetUser: state.targetUser,
+        targetUserDetails: state.targetUserDetails,
         usersList: state.usersList,
         chatData: state.chatData,
         filterCategory: state.filterCategory,
@@ -190,6 +212,7 @@ const ChatState = props => {
         errorMessage: state.errorMessage,
         showSettingsModal: state.showSettingsModal,
         showUserList: state.showUserList,
+        showTargetDetail: state.showTargetDetail,
         handleSignIn,
         handleSetSignedInUser,
         handleLoadUsersList,
@@ -205,6 +228,8 @@ const ChatState = props => {
         handleChangeUsersList,
         handleInActiveUser,
         handleShowUserList,
+        handleTargetUserDetail,
+        handleTargetDetailsInfo,
         handleSetErrorMessage,
         handleSetError
       }}
